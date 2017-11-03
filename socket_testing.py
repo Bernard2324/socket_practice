@@ -40,20 +40,20 @@ class httpconnect(object):
 
 if __name__ == "__main__":
 	test_servers = {
-		'www.google.com': 'enc', 'www.cnn.com': 'not_enc', 'www.iastate.edu': 'enc', 'www.facebook.com': 'enc',
-		'www.oreilly.com': 'enc', 'www.wikipedia.org': 'not_enc', 'www.fbi.gov': 'enc', 'www.cia.gov': 'enc',
-		'www.harvard.edu': 'enc', 'www.amazon.com': 'not_enc', 'www.twitter.com': 'enc','www.instagram.com': 'not_enc',
-		'www.ncaa.org': 'enc'
+		'www.google.com': True, 'www.cnn.com': False, 'www.iastate.edu': True, 'www.facebook.com': True,
+		'www.oreilly.com': True, 'www.wikipedia.org': False, 'www.fbi.gov': True, 'www.cia.gov': True,
+		'www.harvard.edu': True, 'www.amazon.com': True, 'www.twitter.com': True,'www.instagram.com': False,
+		'www.ncaa.org': True
 	}
-	for uri in test_servers.keys():
+
+	for uri, encrytpion in test_server.iteritems():
 		start = time.time()
 		print "Testing URI: %s" % uri
 		try:
-			if not test_servers[uri] == 'enc':
+			if not encrytpion:
 				test = httpconnect(uri)
 			else:
 				test = httpconnect(uri, is_encrypted=True)
-			print '\t'+test.Get()
 		except:
 			print "\t[*]Failed...."
 		print "\tElapsed Time: %s" % (time.time() - start)
