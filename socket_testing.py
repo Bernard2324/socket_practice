@@ -46,7 +46,7 @@ if __name__ == "__main__":
 		'www.ncaa.org': True
 	}
 
-	for uri, encrytpion in test_server.iteritems():
+	for uri, encrytpion in test_servers.iteritems():
 		start = time.time()
 		print "Testing URI: %s" % uri
 		try:
@@ -56,4 +56,5 @@ if __name__ == "__main__":
 				test = httpconnect(uri, is_encrypted=True)
 		except:
 			print "\t[*]Failed...."
+		print "\t"+test.Get()
 		print "\tElapsed Time: %s" % (time.time() - start)
