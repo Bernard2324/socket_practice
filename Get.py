@@ -1,6 +1,7 @@
 #!/usr/bin/evn python
 
 import urllib3
+import socket
 
 class HttpTimeout(urllib3.Timeout):
 
@@ -18,8 +19,8 @@ class Request(object):
 		self._default_timeout = HttpTimeout(readtimeout, changeval=changetimeout)
 		self.url = url
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.sock.settimeout(35)
-		self.sock.setblocking(False)
+		# self.sock.setblocking(False)
+		# self.sock.setttimeout(35)
 		self.port = 80
 
 		if kwargs['ssl']:
@@ -33,7 +34,7 @@ class Request(object):
 			setattr(getattr(self, 'context'), 'verify_mode', 1)
 			setattr(getattr(self, 'context'), 'check_hostname', True)
 			self.context.load_default_certs()
-			self.ssl_socket = self.contxt.wrap_socket(self.sock, hostname=self.url)
+			self.ssl_socket = self.context.wrap_socket(self.sock, hostname=self.url)
 			self.ssl_socket.connect((self.url, self.port))
 			self.instance = self.ssl_socket
 		else:
@@ -62,16 +63,11 @@ class Request(object):
 		request_packet = [request] + raw_request_headers
 		self.instance.send(request_packet)
 
-		data_blocks = []
-		while True:
-			data = self.instance.recv(1024)
-			if data:
-				data_blocks.append(data)
-			else:
-				self.instance.close()
-		return "".join(data_blocks)
+		if hasattr(self, 'instance'):
+			self.instance.send(request_packet)
+			while True:
+				self.instance.recv(1024)
 
 if __name__ == "__main__":
 	http = Request('en.wikipedia.org', changetimeout=30, readtimeout=10, ssl=True)
 	webpage = http.Get(page='/wiki/basketball')
-	print webpage
