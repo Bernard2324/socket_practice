@@ -25,18 +25,18 @@ def socket_fd_list(listofsockets):
 	except:
 		raise RuntimeError("Failed To Prepare SOCKETs for Use!")
 
-	if listofsockets:
-		waittime = 60
-		from select import select
-		(read, write, exe) = select(listofsockets, listofsockets, [], waittime)
+	
+	waittime = 60
+	from select import select
+	(read, write, exe) = select(listofsockets, listofsockets, [], waittime)
 
-		read_fd = [sock.fileno() for sock in read]
-		write_fd = [sock.fileno() for sock in write]
+	read_fd = [sock.fileno() for sock in read]
+	write_fd = [sock.fileno() for sock in write]
 
-		socket_nest['read'] = [read_fd, read]
-		socket_nest['write'] = [write_fd, write]
+	socket_nest['read'] = [read_fd, read]
+	socket_nest['write'] = [write_fd, write]
 
-		return socket_nest
+	return socket_nest
 
 
 def test():
