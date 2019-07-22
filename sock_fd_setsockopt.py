@@ -2,7 +2,7 @@
 
 import socket
 
-def socket_fd_list(listofsockets):
+def socket_fd_list(socket_list):
 	'''
 	This function takes a list of created sockets, then prepares them with the necessary socket
 	options set, and returns the file descriptors of readable sockets.
@@ -10,25 +10,23 @@ def socket_fd_list(listofsockets):
 	This function also returns readable and writable sockets
 	'''
 	socket_nest = {}
-	if listofsockets is None:
-		raise RuntimeError("Failed To Pass A List of Sockets!")
+	if not isinstance(socket_list, list) or socket_list is None:
+		raise ValueError("Failed To Pass A List of Sockets!")
 
 	def setopt(tsocket):
 		# manipulates sockets 'in-flight', no return
-
-		if not tsocket.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR):
-			tsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		tsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		tsocket.setblocking(0)
 
 	try:
-		map(setopt, listofsockets)
+		map(setopt, socket_list)
 	except:
 		raise RuntimeError("Failed To Prepare SOCKETs for Use!")
 
 	
 	waittime = 60
 	from select import select
-	(read, write, exe) = select(listofsockets, listofsockets, [], waittime)
+	(read, write, exe) = select(socket_list, socket_list, [], waittime)
 
 	read_fd = [sock.fileno() for sock in read]
 	write_fd = [sock.fileno() for sock in write]
